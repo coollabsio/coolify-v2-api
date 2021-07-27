@@ -1,0 +1,38 @@
+{
+	"compilerOptions": {
+		"lib": [
+			"es2020"
+		],
+		"module": "commonjs",
+		"target": "es2020",
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"incremental": true,
+		"noImplicitAny": false,
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"outDir": "build",
+		"baseUrl": "src",
+		"skipLibCheck": true,
+		"paths": {
+			"$lib/*": [
+				"lib/*"
+			],
+			"$models/*": [
+				"models/*"
+			],
+			"$routes/*": [
+				"routes/*"
+			],
+			"$plugins/*": [
+				"plugins/*"
+			]
+		}
+	},
+	"include": [
+		"src/**/*.ts"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}
