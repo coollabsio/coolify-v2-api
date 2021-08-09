@@ -12,7 +12,7 @@
     "dev:typescript": "tsc --watch",
     "dev:start": "nodemon build/index.js",
     "build": "tsc && tscpaths -p tsconfig.json -s ./src -o ./build && npm run copy-files",
-    "start": "node build/index.js"
+    "start": "NODE_ENV=production node build/index.js"
   },
   "main": "build/index.js",
   "author": "",
