@@ -67,6 +67,9 @@ server.register(fastifyEnv, {
   if (mongoose.connection.readyState !== 1) await connectMongoDB();
 })();
 
+server.get('/', async () => {
+  return 'OK'
+});
 server.register(app, { prefix: '/api/v1' });
 server.ready(err => {
   if (err) throw err
