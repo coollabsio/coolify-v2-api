@@ -1,14 +1,7 @@
 import fp from 'fastify-plugin';
 import jwt from 'fastify-jwt';
 import type { FastifyPluginAsync } from 'fastify';
-
-declare module 'fastify' {
-  interface FastifyInstance {
-    config: {
-      JWT_SIGN_KEY: string;
-    };
-  }
-}
+import User from '$models/User';
 
 const plugin: FastifyPluginAsync = async (fastify, options) => {
   fastify.register(jwt, {
@@ -16,18 +9,13 @@ const plugin: FastifyPluginAsync = async (fastify, options) => {
   });
   fastify.addHook('onRequest', async (request, reply) => {
     try {
-      console.log('onRequest')
       await request.jwtVerify();
-      const found = true;
-      if (found) {
-        return true;
-      } else {
-        throw new Error('User not found');
-      }
+      // const found = await User.findOne({ uid: verify.jti })
     } catch (err) {
+      console.log(err)
       throw { status: 401 };
     }
   });
 };
 
-export default plugin;
+export default fp(plugin);

@@ -1,3 +1,4 @@
+import { saveAppLog } from '$lib/common';
 import Deployment from '$models/Deployment';
 import * as buildPacks from './buildPacks';
 
@@ -12,9 +13,9 @@ export default async function (configuration: any) {
       { repoId: id, branch, deployId, organization, name, domain },
       { repoId: id, branch, deployId, organization, name, domain, progress: 'inprogress' },
     );
-    // await saveAppLog('### Building application.', configuration);
+    await saveAppLog('### Building application.', configuration);
     await execute(configuration);
-    // await saveAppLog('### Building done.', configuration);
+    await saveAppLog('### Building done.', configuration);
   } else {
     try {
       await Deployment.findOneAndUpdate(

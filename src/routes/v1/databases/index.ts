@@ -19,7 +19,7 @@ interface DeployId {
   deployId: string;
 }
 const route: FastifyPluginAsync = async (fastify, options) => {
-  fastify.post<{ Body: Deploy }>('/databases', async (request, reply) => {
+  fastify.post<{ Body: Deploy }>('/databases/deploy', async (request, reply) => {
     try {
       const { type } = request.body;
       let { defaultDatabaseName } = request.body;
@@ -321,20 +321,10 @@ const route: FastifyPluginAsync = async (fastify, options) => {
           };
         }
       }
-      return {
-        status: 501,
-        body: {
-          error: `Backup method not implemented yet for ${type}.`,
-        },
-      };
+      throw new Error(`Backup method not implemented yet for ${type}.`)
     } catch (error) {
       // await saveServerLog(error);
-      return {
-        status: 500,
-        body: {
-          error: error.message || error,
-        },
-      };
+      throw new Error(error.message || error)
     } finally {
       await execShellAsync(`rm -fr ${tmpdir}`);
     }

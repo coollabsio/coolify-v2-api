@@ -2,6 +2,11 @@ import type { FastifyPluginAsync } from 'fastify';
 import Settings from '$models/Settings';
 const applicationName = 'coolify';
 
+interface Settings {
+  allowRegistration: boolean;
+  sendErrors: boolean;
+
+}
 const route: FastifyPluginAsync = async (fastify, options) => {
   fastify.get('/settings', async () => {
     try {
@@ -17,18 +22,21 @@ const route: FastifyPluginAsync = async (fastify, options) => {
       throw new Error(error);
     }
   });
-  fastify.post('/', async (request, reply) => {
+  fastify.post<{ Body: Settings }>('/settings', async (request, reply) => {
+    const { allowRegistration, sendErrors } = request.body
     try {
       const settings = await Settings.findOneAndUpdate(
         { applicationName },
         // @ts-ignore
-        { applicationName, ...request.body },
+        { applicationName, allowRegistration, sendErrors },
         { upsert: true, new: true },
-      ).select('-_id -__v');
+      ).select('-_id -__v -createdAt -updatedAt -applicationName');
+
       return {
         ...settings._doc,
       };
     } catch (error) {
+      console.log(error)
       // await saveServerLog(error);
       throw new Error(error);
     }

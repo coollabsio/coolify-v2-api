@@ -3,39 +3,80 @@ import fastifyEnv from 'fastify-env';
 import app from './app';
 import mongoose from 'mongoose';
 import connectMongoDB from '$lib/database';
-// import fastifyNow from 'fastify-now';
-// import path from 'path';
-// import authentication from '$plugins/authentication';
+import fastifyCookie, { FastifyCookieOptions } from 'fastify-cookie'
+import fastifyStatic from 'fastify-static'
+import socketioServer from 'fastify-socket.io'
+import path from 'path';
+
 const PORT = Number(process.env.PORT) || 3001;
 
 declare module 'fastify' {
   interface FastifyInstance {
     config: {
-      JWT_SIGN_KEY: string;
+      JWT_SIGN_KEY: string,
+      DOCKER_ENGINE: string,
+      VITE_GITHUB_APP_CLIENTID: string;
+      GITHUB_APP_CLIENT_SECRET: string;
     };
   }
 }
-const server = fastify({ logger: true });
+
 const requiredDotenvSchema = {
   type: 'object',
-  required: ['JWT_SIGN_KEY'],
+  required: ['JWT_SIGN_KEY', 'DOCKER_ENGINE', 'VITE_GITHUB_APP_CLIENTID', 'GITHUB_APP_CLIENT_SECRET'],
   properties: {
     JWT_SIGN_KEY: {
+      type: 'string',
+    },
+    DOCKER_ENGINE: {
+      type: 'string',
+    },
+    VITE_GITHUB_APP_CLIENTID: {
+      type: 'string',
+    },
+    GITHUB_APP_CLIENT_SECRET: {
       type: 'string',
     },
   },
 };
 
+const server = fastify({
+  logger: {
+    prettyPrint: {
+      translateTime: true,
+      ignore: 'pid,hostname,reqId,responseTime,req,res',
+      messageFormat: '{msg} [id={reqId} {req.method} {req.url}]'
+    }
+  }
+});
+server.register(fastifyCookie, {
+  secret: "my-secret",
+} as FastifyCookieOptions)
+console.log(path.join(__dirname, 'public'))
+server.register(fastifyStatic, {
+  root: path.join(__dirname, 'public'),
+
+})
+server.register(socketioServer)
 server.register(fastifyEnv, {
   schema: requiredDotenvSchema,
-  dotenv: true,
+  dotenv: true
 });
 
 (async () => {
   if (mongoose.connection.readyState !== 1) await connectMongoDB();
 })();
 
-server.register(app, { prefix: '/v1' });
+server.register(app, { prefix: '/api/v1' });
+server.ready(err => {
+  if (err) throw err
+  server.io.on('connect', (socket) => {
+    socket.on('asd', (data) => {
+      console.log(data)
+    })
+    console.info('Socket connected!', socket.id)
+  })
+})
 server.listen(PORT, (err, address) => {
   if (err) {
     console.error(err);

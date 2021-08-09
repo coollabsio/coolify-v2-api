@@ -1,12 +1,14 @@
 import Dockerode from 'dockerode';
-// import { saveAppLog } from './applications/logging';
+import dotenv from 'dotenv';
+import { saveAppLog } from './common';
+dotenv.config()
 
-const { DOCKER_ENGINE, DOCKER_NETWORK } = process.env;
+
 export const docker = {
   engine: new Dockerode({
-    socketPath: DOCKER_ENGINE,
+    socketPath: process.env.DOCKER_ENGINE,
   }),
-  network: DOCKER_NETWORK,
+  network: process.env.DOCKER_NETWORK,
 };
 export async function streamEvents(stream, configuration) {
   await new Promise((resolve, reject) => {
@@ -17,10 +19,10 @@ export async function streamEvents(stream, configuration) {
     }
     function onProgress(event) {
       if (event.error) {
-        // saveAppLog(event.error, configuration, true);
+        saveAppLog(event.error, configuration, true);
         reject(event.error);
       } else if (event.stream) {
-        // saveAppLog(event.stream, configuration);
+        saveAppLog(event.stream, configuration);
       }
     }
   });

@@ -10,11 +10,8 @@ export default async function (configuration) {
   });
   if (alreadyQueued.length > 0) {
     return {
-      status: 200,
-      body: {
-        success: false,
-        message: 'Deployment already queued.',
-      },
+      success: false,
+      message: 'Deployment already queued.',
     };
   }
   const { id, organization, name, branch } = configuration.repository;

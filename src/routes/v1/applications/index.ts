@@ -101,8 +101,8 @@ const route: FastifyPluginAsync = async (fastify, options) => {
                 .map((l) => l.slice(8))
                 .filter((a) => a);
             return {
-                status: 200,
-                body: { success: true, logs },
+                success: true,
+                logs
             };
         } catch (error) {
             console.log(error);
@@ -154,12 +154,10 @@ const route: FastifyPluginAsync = async (fastify, options) => {
                     await execShellAsync(`docker stack rm ${prDeployment.build.container.name}`);
                 }
                 return {
-                    status: 200,
-                    body: {
-                        organization,
-                        name,
-                        branch,
-                    },
+                    success: true,
+                    organization,
+                    name,
+                    branch,
                 };
             }
             updateServiceLabels(configuration);
@@ -255,47 +253,31 @@ const route: FastifyPluginAsync = async (fastify, options) => {
             finalLogs.events = logs.map((log) => log.event);
             finalLogs.human = dayjs(deploy.updatedAt).from(dayjs(deploy.updatedAt));
             return {
-                status: 200,
-                body: {
-                    ...finalLogs,
-                },
+                ...finalLogs,
             };
         } catch (error) {
-            return {
-                status: 500,
-                body: {
-                    error: error.message || error,
-                },
-            };
+            throw new Error(error.message || error)
         }
     });
     fastify.post('/applications/deploy', async (request, reply) => {
         const configuration = setDefaultConfiguration(request.body);
-        if (!configuration) {
-            return {
-                status: 500,
-                body: {
-                    error: 'Whaaat?',
-                },
-            };
-        }
+        if (!configuration) throw new Error('Whaaat?');
         try {
             await cloneGithubRepository(configuration);
             const nextStep = await preChecks(configuration);
+            console.log(nextStep)
             if (nextStep === 0) {
                 cleanupTmp(configuration.general.workdir);
                 return {
-                    status: 200,
-                    body: {
-                        success: false,
-                        message: 'Nothing changed, no need to redeploy.',
-                    },
+                    success: false,
+                    message: 'Nothing changed, no need to redeploy.',
                 };
             }
             await preTasks(configuration);
 
             queueAndBuild(configuration, nextStep);
             return {
+                success: true,
                 message: 'Deployment queued.',
                 nickname: configuration.general.nickname,
                 name: configuration.build.container.name,

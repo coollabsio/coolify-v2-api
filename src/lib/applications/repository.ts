@@ -1,5 +1,6 @@
 import jsonwebtoken from 'jsonwebtoken';
 import { execShellAsync } from '$lib/common';
+import fetch from 'node-fetch'
 
 export async function cloneGithubRepository(configuration) {
   try {

@@ -1,3 +1,4 @@
+import { saveAppLog } from '$lib/common';
 import Deployment from '$models/Deployment';
 import buildContainer from './buildContainer';
 import { purgeImagesContainers } from './cleanup';
@@ -10,7 +11,7 @@ export default async function (configuration, nextStep) {
   const { domain } = configuration.publish;
   const { deployId } = configuration.general;
   try {
-    // await saveAppLog(`### Successfully queued.`, configuration);
+    await saveAppLog(`### Successfully queued.`, configuration);
     await copyFiles(configuration);
     await buildContainer(configuration);
     await deploy(configuration, nextStep);

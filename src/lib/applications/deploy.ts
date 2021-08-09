@@ -1,7 +1,7 @@
 import { docker } from '$lib/docker';
 import { promises as fs } from 'fs';
 import yaml from 'js-yaml';
-import { execShellAsync } from '$lib/common';
+import { execShellAsync, saveAppLog } from '$lib/common';
 
 export default async function (configuration, nextStep) {
   const generateEnvs = {};
@@ -52,7 +52,7 @@ export default async function (configuration, nextStep) {
       },
     },
   };
-  // await saveAppLog('### Publishing.', configuration);
+  await saveAppLog('### Publishing.', configuration);
   await fs.writeFile(`${configuration.general.workdir}/stack.yml`, yaml.dump(stack));
   if (nextStep === 2) {
     // console.log('image changed')
@@ -72,5 +72,5 @@ export default async function (configuration, nextStep) {
     );
   }
 
-  // await saveAppLog('### Published done!', configuration);
+  await saveAppLog('### Published done!', configuration);
 }
