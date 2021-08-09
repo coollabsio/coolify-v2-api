@@ -17,6 +17,7 @@ specifiers:
   eslint-plugin-prettier: ^3.4.0
   fastify: ^3.19.2
   fastify-cookie: ^5.3.1
+  fastify-cors: ^6.0.2
   fastify-env: ^2.1.1
   fastify-jwt: ^3.0.0
   fastify-socket.io: ^2.0.0
@@ -44,6 +45,7 @@ dependencies:
   dockerode: 3.3.0
   fastify: 3.19.2
   fastify-cookie: 5.3.1
+  fastify-cors: 6.0.2
   fastify-env: 2.1.1
   fastify-jwt: 3.0.0
   fastify-socket.io: 2.0.0
@@ -1507,6 +1509,13 @@ packages:
       cookie: 0.4.1
       cookie-signature: 1.1.0
       fastify-plugin: 3.0.0
+    dev: false
+
+  /fastify-cors/6.0.2:
+    resolution: {integrity: sha512-sE0AOyzmj5hLLRRVgenjA6G2iOGX35/1S3QGYB9rr9TXelMZB3lFrXy4CzwYVOMiujJeMiLgO4J7eRm8sQSv8Q==}
+    dependencies:
+      fastify-plugin: 3.0.0
+      vary: 1.1.2
     dev: false
 
   /fastify-env/2.1.1:

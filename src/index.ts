@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import connectMongoDB from '$lib/database';
 import fastifyCookie, { FastifyCookieOptions } from 'fastify-cookie'
 import fastifyStatic from 'fastify-static'
+import fastifyCors from 'fastify-cors'
 import socketioServer from 'fastify-socket.io'
 import path from 'path';
 
@@ -53,6 +54,7 @@ const server = fastify({
     }
   }
 });
+server.register(fastifyCors)
 server.register(fastifyCookie, {
   secret: "my-secret",
 } as FastifyCookieOptions)
