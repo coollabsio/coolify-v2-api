@@ -13,8 +13,9 @@ const PORT = Number(process.env.PORT) || 3001;
 declare module 'fastify' {
   interface FastifyInstance {
     config: {
-      JWT_SIGN_KEY: string,
-      DOCKER_ENGINE: string,
+      DOMAIN: string;
+      JWT_SIGN_KEY: string;
+      DOCKER_ENGINE: string;
       VITE_GITHUB_APP_CLIENTID: string;
       GITHUB_APP_CLIENT_SECRET: string;
     };
@@ -23,8 +24,11 @@ declare module 'fastify' {
 
 const requiredDotenvSchema = {
   type: 'object',
-  required: ['JWT_SIGN_KEY', 'DOCKER_ENGINE', 'VITE_GITHUB_APP_CLIENTID', 'GITHUB_APP_CLIENT_SECRET'],
+  required: ['DOMAIN', 'JWT_SIGN_KEY', 'DOCKER_ENGINE', 'VITE_GITHUB_APP_CLIENTID', 'GITHUB_APP_CLIENT_SECRET'],
   properties: {
+    DOMAIN: {
+      type: 'string'
+    },
     JWT_SIGN_KEY: {
       type: 'string',
     },

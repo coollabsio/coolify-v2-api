@@ -101,7 +101,7 @@ const route: FastifyPluginAsync = async (fastify, options) => {
         .code(200)
         .redirect(
           302,
-          `${request.headers.referer}success?coolToken=${coolToken}&ghToken=${access_token}`
+          `https://${fastify.config.DOMAIN}/success?coolToken=${coolToken}&ghToken=${access_token}`
         )
     } catch (error) {
      throw new Error(error.message || error)
