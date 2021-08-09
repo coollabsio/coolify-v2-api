@@ -22,7 +22,7 @@ interface Headers {
   'x-github-event': string;
 }
 const route: FastifyPluginAsync = async (fastify, options) => {
-  fastify.post<{ Body: Body; Headers: Headers }>('/webhooks/deploy', async (request, reply) => {
+  fastify.post<{ Body: Body; Headers: Headers }>('/webhooks/applications/deploy', async (request, reply) => {
     let configuration;
     const allowedGithubEvents = ['push', 'pull_request'];
     const allowedPRActions = ['opened', 'reopened', 'synchronize', 'closed'];
